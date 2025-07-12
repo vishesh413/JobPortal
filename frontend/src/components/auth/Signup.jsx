@@ -36,15 +36,19 @@ const Signup = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        if (!input.file) {
+            toast.error("Please upload a profile image before signing up.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
         formData.append("phoneNumber", input.phoneNumber);
         formData.append("password", input.password);
         formData.append("role", input.role);
-        if (input.file) {
-            formData.append("file", input.file);
-        }
+        formData.append("file", input.file);
 
         try {
             dispatch(setLoading(true));
@@ -58,7 +62,7 @@ const Signup = () => {
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "Signup failed");
         } finally {
             dispatch(setLoading(false));
         }
@@ -68,7 +72,7 @@ const Signup = () => {
         if (user) {
             navigate("/");
         }
-    }, []);
+    }, [user, navigate]);
 
     return (
         <div>
